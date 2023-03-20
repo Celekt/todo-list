@@ -23,6 +23,7 @@ const routes = [
         name: "todo",
         beforeEnter: (to) => {
             let todos = JSON.parse(localStorage.getItem("myLists"))
+            console.log(todos);
             if (!todos || !todos[to.params.id]) {
                 return `/`;
             }

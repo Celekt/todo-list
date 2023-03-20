@@ -20,7 +20,6 @@ export default {
   },
   computed: {
     filteredTodos(){
-      console.log("calc filtered")
       return this.todos.filter(todo =>
         this.display === "all"
       || this.display === "todo" && !todo.done

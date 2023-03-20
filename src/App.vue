@@ -3,11 +3,10 @@
   <div class="update-buttons">
     <button class="update-button add-button" type="button" @click="addNewList">+ Add new list</button>
     <button class="update-button remove-button" type="button" @click="removeList">- Remove current list</button>
-    <select class="select-list" :value="this.route.params.id">
+    <select class="select-list" :value="this.route.params.id" v-model="currentList" @change="routerPush()">
       <option
           v-for="(list, key) in this.todoLists"
           :key="key" :value="key"
-          @click="router.push(`/todo/${key}`)"
       >
         Liste#{{ Number(key) + 1 }}
       </option>
@@ -28,6 +27,7 @@ export default {
       router: useRouter(),
       route: useRoute(),
       todoLists: JSON.parse(localStorage.getItem("myLists")) || {},
+      currentList: 0,
     }
   },
 
@@ -40,7 +40,15 @@ export default {
     }
   },
 
+  mounted() {
+    this.currentList = this.route.params.id;
+  },
+
   methods: {
+    routerPush() {
+      this.router.push(`/todo/${this.currentList}`);
+    },
+
     addNewList() {
       // let loaded = JSON.parse(localStorage.getItem("myLists")) || {};
       // const id = Number(Object.keys(loaded).at(-1)) + 1;
@@ -51,6 +59,7 @@ export default {
       this.todoLists[id] = []
       localStorage.setItem("myLists", JSON.stringify(this.todoLists));
 
+      this.currentList = id;
       this.router.push(`/todo/${id}`);
     },
     removeList() {
@@ -60,6 +69,7 @@ export default {
 
       delete this.todoLists[this.route.params.id];
       localStorage.setItem("myLists", JSON.stringify(this.todoLists));
+      this.currentList = id;
       this.router.push("/");
     },
     addTodo(id, text) {
@@ -93,7 +103,6 @@ export default {
 
     todoLists: {
       handler(newValue) {
-        console.log(newValue)
         localStorage.setItem("myLists", JSON.stringify(newValue))
       },
       deep: true,
